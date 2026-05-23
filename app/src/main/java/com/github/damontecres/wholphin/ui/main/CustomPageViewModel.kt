@@ -94,9 +94,12 @@ class CustomPageViewModel
                     return
                 }
             if (page == null) {
-                if (!hadCache) {
-                    _state.update { it.copy(loading = LoadingState.Error("Page not found")) }
-                }
+                // 404 from the plugin: the page no longer exists (e.g. admin renamed its id or
+                // removed it). Drop any stale cached rows and always surface the error, even when
+                // we previously had a cache — otherwise the user would keep seeing items from a
+                // page that's already gone.
+                rowsCache.invalidate(userDto.id, pageId)
+                _state.update { it.copy(loading = LoadingState.Error("Page not found")) }
                 return
             }
 

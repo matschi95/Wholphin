@@ -34,6 +34,13 @@ class CustomPageRowsCache
             cache[key(userId, pageId)] = data
         }
 
+        fun invalidate(
+            userId: UUID,
+            pageId: String,
+        ) {
+            cache.remove(key(userId, pageId))
+        }
+
         fun clear() {
             cache.clear()
         }
